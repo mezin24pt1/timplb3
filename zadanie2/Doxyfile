@@ -1,0 +1,9 @@
+PROJECT_NAME           = "Шифр маршрутной перестановки"
+OUTPUT_LANGUAGE        = Russian
+EXTRACT_ALL            = YES
+EXTRACT_PRIVATE        = YES
+EXTRACT_STATIC         = YES
+GENERATE_HTML          = YES
+GENERATE_LATEX         = YES
+INPUT                  = main.cpp table.cpp table.h test_table.cpp
+RECURSIVE              = NO
