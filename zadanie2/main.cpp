@@ -1,3 +1,12 @@
+/**
+ * @file main.cpp
+ * @author Мезин Андрей Андреевич 
+ * @version 1.0
+ * @date 2025
+ * @brief Главный модуль программы для шифрования/расшифрования табличной перестановкой
+ * @details Реализует пользовательский интерфейс для работы с шифром табличной маршрутной перестановки
+ */
+
 #include <iostream>
 #include <locale>
 #include <codecvt>
@@ -8,18 +17,36 @@
 #include "table.h"
 using namespace std;
 
+/**
+ * @brief Преобразование строки UTF-8 в широкую строку
+ * @param s строка в UTF-8
+ * @return широкая строка
+ */
+ 
 wstring str8_to_w(const string& s)
 {
     wstring_convert<codecvt_utf8<wchar_t>> conv;
     return conv.from_bytes(s);
 }
 
+/**
+ * @brief Преобразование широкой строки в строку UTF-8
+ * @param ws широкая строка
+ * @return строка в UTF-8
+ */
+ 
 string w_to_str8(const wstring& ws)
 {
     wstring_convert<codecvt_utf8<wchar_t>> conv;
     return conv.to_bytes(ws);
 }
 
+/**
+ * @brief Главная функция программы
+ * @return код завершения программы
+ * @details Реализует диалоговый интерфейс для шифрования/расшифрования табличной перестановкой
+ */
+ 
 int main()
 {
     setlocale(LC_ALL, "ru_RU.UTF-8");
