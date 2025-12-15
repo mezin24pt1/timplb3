@@ -1,21 +1,48 @@
+/**
+ * @file test.cpp
+ * @author Мезин Андрей Андреевич 
+ * @version 1.0
+ * @date 2025
+ * @brief Модульные тесты для класса modAlphaCipher
+ * @details Тестирование функциональности шифрования и обработки ошибок
+ */
+
 #include <UnitTest++/UnitTest++.h>
 #include <string>
 #include "modAlphaCipher.h"
 using namespace std;
 
+/**
+ * @brief Преобразование широкой строки в UTF-8
+ * @param ws широкая строка
+ * @return строка в UTF-8
+ */
+ 
 string wideToUtf8(const wstring& ws) {
     wstring_convert<codecvt_utf8<wchar_t>> conv;
     return conv.to_bytes(ws);
 }
 
+/**
+ * @brief Преобразование строки UTF-8 в широкую строку
+ * @param s строка в UTF-8
+ * @return широкая строка
+ */
+ 
 wstring utf8ToWide(const string& s) {
     wstring_convert<codecvt_utf8<wchar_t>> conv;
     return conv.from_bytes(s);
 }
 
+/// Макрос для сравнения широких строк в тестах
 #define CHECK_WIDE_EQUAL(expected, actual) \
     CHECK_EQUAL(wideToUtf8(expected), wideToUtf8(actual))
 
+/**
+ * @brief Тестовый набор для конструктора
+ * @details Проверяет различные сценарии инициализации ключа
+ */
+ 
 SUITE(ConstructorTest)
 {
     TEST(ValidKey) {
@@ -54,6 +81,11 @@ SUITE(ConstructorTest)
     }
 }
 
+/**
+ * @brief Фикстура для тестов с ключом "Б"
+ * @details Создает экземпляр шифратора с ключом "Б" для повторного использования
+ */
+ 
 struct KeyBFixture {
     modAlphaCipher* cipher;
     
@@ -66,6 +98,11 @@ struct KeyBFixture {
     }
 };
 
+/**
+ * @brief Тестовый набор для метода encrypt
+ * @details Проверяет различные сценарии шифрования
+ */
+ 
 SUITE(EncryptTest)
 {
     TEST_FIXTURE(KeyBFixture, UpperCaseString) {
@@ -81,7 +118,7 @@ SUITE(EncryptTest)
     }
     
     TEST_FIXTURE(KeyBFixture, StringWithNumbers) {
-        CHECK_WIDE_EQUAL(L"ТОПГЬНДПЕПН", cipher->encrypt(L"С Новым 2026 Годом"));
+        CHECK_WIDE_EQUAL(L"ТОПГЬНДПЕПН", cipher->encrypt(L"С Новым 2024 Годом"));
     }
     
     TEST_FIXTURE(KeyBFixture, EmptyString) {
@@ -98,6 +135,11 @@ SUITE(EncryptTest)
     }
 }
 
+/**
+ * @brief Тестовый набор для метода decrypt
+ * @details Проверяет различные сценарии расшифрования
+ */
+ 
 SUITE(DecryptTest)
 {
     TEST_FIXTURE(KeyBFixture, UpperCaseString) {
@@ -130,6 +172,13 @@ SUITE(DecryptTest)
     }
 }
 
+/**
+ * @brief Главная функция тестов
+ * @param argc количество аргументов
+ * @param argv массив аргументов
+ * @return результат выполнения тестов
+ */
+ 
 int main(int argc, char** argv)
 {
     return UnitTest::RunAllTests();
