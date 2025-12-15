@@ -1,3 +1,11 @@
+/**
+ * @file test_table.cpp
+ * @author Мезин Андрей Андреевич 
+ * @version 1.0
+ * @date 2025
+ * @brief Модульные тесты для класса Table
+ * @details Тестирование функциональности шифрования табличной перестановкой и обработки ошибок
+ */
 
 #include <UnitTest++/UnitTest++.h>
 #include <string>
@@ -7,19 +15,37 @@
 
 using namespace std;
 
+/**
+ * @brief Преобразование широкой строки в UTF-8
+ * @param ws широкая строка
+ * @return строка в UTF-8
+ */
+ 
 string wideToUtf8(const wstring& ws) {
     wstring_convert<codecvt_utf8<wchar_t>> conv;
     return conv.to_bytes(ws);
 }
 
+/**
+ * @brief Преобразование строки UTF-8 в широкую строку
+ * @param s строка в UTF-8
+ * @return широкая строка
+ */
+ 
 wstring utf8ToWide(const string& s) {
     wstring_convert<codecvt_utf8<wchar_t>> conv;
     return conv.from_bytes(s);
 }
 
+/// Макрос для сравнения широких строк в тестах
 #define CHECK_WIDE_EQUAL(expected, actual) \
     CHECK_EQUAL(wideToUtf8(expected), wideToUtf8(actual))
 
+/**
+ * @brief Тестовый набор для конструктора Table
+ * @details Проверяет различные сценарии инициализации ключа (количества столбцов)
+ */
+ 
 SUITE(ConstructorTest)
 {
     TEST(ValidKey) {
@@ -46,6 +72,11 @@ SUITE(ConstructorTest)
     }
 }
 
+/**
+ * @brief Фикстура для тестов с ключом 3
+ * @details Создает экземпляр шифратора с 3 столбцами для повторного использования
+ */
+ 
 struct Key3Fixture {
     Table* cipher;
     
@@ -58,6 +89,11 @@ struct Key3Fixture {
     }
 };
 
+/**
+ * @brief Тестовый набор для метода encrypt
+ * @details Проверяет различные сценарии шифрования табличной перестановкой
+ */
+ 
 SUITE(EncryptTest)
 {
     TEST_FIXTURE(Key3Fixture, UpperCaseString) {
@@ -107,6 +143,11 @@ SUITE(EncryptTest)
     }
 }
 
+/**
+ * @brief Тестовый набор для метода decrypt
+ * @details Проверяет различные сценарии расшифрования табличной перестановкой
+ */
+ 
 SUITE(DecryptTest)
 {
     TEST_FIXTURE(Key3Fixture, UpperCaseString) {
@@ -156,6 +197,13 @@ SUITE(DecryptTest)
     }
 }
 
+/**
+ * @brief Главная функция тестов
+ * @param argc количество аргументов
+ * @param argv массив аргументов
+ * @return результат выполнения тестов
+ */
+ 
 int main(int argc, char** argv)
 {
     return UnitTest::RunAllTests();
