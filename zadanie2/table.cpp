@@ -1,3 +1,10 @@
+/**
+ * @file table.cpp
+ * @author Мезин Андрей Андреевич 
+ * @version 1.0
+ * @date 2025
+ * @brief Реализация методов класса Table для табличной маршрутной перестановки
+ */
 
 #include "table.h"
 #include <algorithm>
@@ -5,12 +12,27 @@
 #include <cwctype>  
 using namespace std;
 
+/**
+ * @brief Валидация ключа (количества столбцов)
+ * @param key исходный ключ
+ * @return валидированный ключ
+ * @throw cipher_error если ключ неположительный
+ */
+ 
 int Table::getValidKey(const int key)
 {
     if (key <= 0)
         throw cipher_error("Invalid key: key must be positive");
     return key;
 }
+
+/**
+ * @brief Валидация и нормализация открытого текста
+ * @param s исходный открытый текст
+ * @return валидированный текст в верхнем регистре без пробелов и не-букв
+ * @throw cipher_error если текст пустой после обработки
+ */
+ 
 wstring Table::getValidOpenText(const wstring& s)
 {
     wstring tmp;
@@ -22,7 +44,6 @@ wstring Table::getValidOpenText(const wstring& s)
             if (upper.find(c) != wstring::npos) {
                 tmp.push_back(c);
             } else {
-    
                 size_t pos = lower.find(c);
                 if (pos != wstring::npos) {
                     tmp.push_back(upper[pos]); 
@@ -35,6 +56,13 @@ wstring Table::getValidOpenText(const wstring& s)
     return tmp;
 }
 
+/**
+ * @brief Валидация зашифрованного текста
+ * @param s исходный зашифрованный текст
+ * @return валидированный зашифрованный текст
+ * @throw cipher_error если текст пустой или содержит недопустимые символы
+ */
+ 
 wstring Table::getValidCipherText(const wstring& s)
 {
     if (s.empty())
@@ -59,11 +87,26 @@ wstring Table::getValidCipherText(const wstring& s)
     return tmp;
 }
 
+/**
+ * @brief Конструктор класса Table
+ * @param key количество столбцов таблицы
+ * @throw cipher_error если ключ невалиден
+ */
+ 
 Table::Table(int key)
 {
     cols = getValidKey(key);
 }
 
+/**
+ * @brief Шифрование открытого текста табличной перестановкой
+ * @param plain открытый текст для шифрования
+ * @return зашифрованный текст
+ * @details Маршрут записи: по горизонтали слева направо, сверху вниз
+ * @details Маршрут считывания: сверху вниз, справа налево
+ * @throw cipher_error если открытый текст невалиден
+ */
+ 
 wstring Table::encrypt(const wstring& plain)
 {
     wstring validText = getValidOpenText(plain);
@@ -73,6 +116,7 @@ wstring Table::encrypt(const wstring& plain)
     vector<vector<wchar_t>> grid(rows, vector<wchar_t>(cols, L' '));
     int pos = 0;
 
+    // Заполнение таблицы по горизонтали слева направо, сверху вниз
     for (int r = 0; r < rows; ++r) {
         for (int c = 0; c < cols; ++c) {
             if (pos < n) {
@@ -84,6 +128,7 @@ wstring Table::encrypt(const wstring& plain)
     wstring out;
     out.reserve(n);
     
+    // Считывание таблицы сверху вниз, справа налево
     for (int c = cols - 1; c >= 0; --c) {
         for (int r = 0; r < rows; ++r) {
             if (grid[r][c] != L' ') {
@@ -94,6 +139,14 @@ wstring Table::encrypt(const wstring& plain)
     return out;
 }
 
+/**
+ * @brief Расшифрование зашифрованного текста табличной перестановкой
+ * @param cipher зашифрованный текст для расшифрования
+ * @return расшифрованный текст
+ * @details Обратный процесс шифрованию с учетом маршрутов
+ * @throw cipher_error если зашифрованный текст невалиден
+ */
+ 
 wstring Table::decrypt(const wstring& cipher)
 {
     wstring validText = getValidCipherText(cipher);
@@ -106,6 +159,7 @@ wstring Table::decrypt(const wstring& cipher)
     vector<vector<wchar_t>> grid(rows, vector<wchar_t>(cols, L' '));
     int pos = 0;
 
+    // Заполнение таблицы по маршруту считывания (сверху вниз, справа налево)
     for (int c = cols - 1; c >= 0; --c) {
         int h = rows;
     
@@ -122,6 +176,7 @@ wstring Table::decrypt(const wstring& cipher)
     wstring out;
     out.reserve(n);
     
+    // Считывание таблицы по маршруту записи (по горизонтали слева направо, сверху вниз)
     for (int r = 0; r < rows; ++r) {
         for (int c = 0; c < cols; ++c) {
             if (grid[r][c] != L' ') {
