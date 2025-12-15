@@ -1,14 +1,34 @@
+/**
+ * @file modAlphaCipher.cpp
+ * @author Мезин Андрей Андреевич 
+ * @version 1.0
+ * @date 2025
+ * @brief Реализация методов класса modAlphaCipher
+ */
+
 #include "modAlphaCipher.h"
 using namespace std;
 
+/**
+ * @brief Конструктор класса modAlphaCipher
+ * @param keyStr строковый ключ для шифрования
+ * @throw cipher_error если ключ невалиден
+ */
 modAlphaCipher::modAlphaCipher(const wstring& keyStr)
 {
+    // Инициализация ассоциативного массива
     for (unsigned k = 0; k < alphabet.size(); ++k) {
         alphaIndex[alphabet[k]] = k;
     }
     keySeq = toNums(getValidKey(keyStr));
 }
 
+/**
+ * @brief Преобразование строки в числовой вектор
+ * @param s входная строка
+ * @return вектор чисел, соответствующих символам строки
+ */
+ 
 vector<int> modAlphaCipher::toNums(const wstring& s)
 {
     vector<int> resultNums;
@@ -19,6 +39,12 @@ vector<int> modAlphaCipher::toNums(const wstring& s)
     return resultNums;
 }
 
+/**
+ * @brief Преобразование числового вектора в строку
+ * @param v входной вектор чисел
+ * @return строка, составленная из символов алфавита
+ */
+ 
 wstring modAlphaCipher::toStr(const vector<int>& v)
 {
     wstring resultStr;
@@ -29,6 +55,13 @@ wstring modAlphaCipher::toStr(const vector<int>& v)
     return resultStr;
 }
 
+/**
+ * @brief Валидация и нормализация ключа
+ * @param s исходный ключ
+ * @return валидированный ключ в верхнем регистре
+ * @throw cipher_error если ключ пустой, содержит пробелы, недопустимые символы или вырожден
+ */
+ 
 wstring modAlphaCipher::getValidKey(const wstring& s)
 {
     wstring tmp;
@@ -79,6 +112,13 @@ wstring modAlphaCipher::getValidKey(const wstring& s)
     return tmp;
 }
 
+/**
+ * @brief Валидация и нормализация открытого текста
+ * @param s исходный открытый текст
+ * @return валидированный текст в верхнем регистре без пробелов и не-букв
+ * @throw cipher_error если текст пустой после обработки
+ */
+ 
 wstring modAlphaCipher::getValidOpenText(const wstring& s)
 {
     wstring tmp;
@@ -90,7 +130,6 @@ wstring modAlphaCipher::getValidOpenText(const wstring& s)
             if (alphabet.find(c) != wstring::npos) {
                 tmp.push_back(c);
             } else {
-                
                 size_t pos = lower.find(c);
                 if (pos != wstring::npos) {
                     tmp.push_back(upper[pos]); 
@@ -103,6 +142,13 @@ wstring modAlphaCipher::getValidOpenText(const wstring& s)
     return tmp;
 }
 
+/**
+ * @brief Валидация зашифрованного текста
+ * @param s исходный зашифрованный текст
+ * @return валидированный зашифрованный текст
+ * @throw cipher_error если текст пустой или содержит недопустимые символы
+ */
+ 
 wstring modAlphaCipher::getValidCipherText(const wstring& s)
 {
     wstring tmp;
@@ -124,6 +170,13 @@ wstring modAlphaCipher::getValidCipherText(const wstring& s)
     return tmp;
 }
 
+/**
+ * @brief Шифрование открытого текста
+ * @param plain открытый текст для шифрования
+ * @return зашифрованный текст
+ * @throw cipher_error если открытый текст невалиден
+ */
+ 
 wstring modAlphaCipher::encrypt(const wstring& plain)
 {
     vector<int> tmp = toNums(getValidOpenText(plain));
@@ -133,6 +186,13 @@ wstring modAlphaCipher::encrypt(const wstring& plain)
     return toStr(tmp);
 }
 
+/**
+ * @brief Расшифрование зашифрованного текста
+ * @param cipher зашифрованный текст для расшифрования
+ * @return расшифрованный текст
+ * @throw cipher_error если зашифрованный текст невалиден
+ */
+ 
 wstring modAlphaCipher::decrypt(const wstring& cipher)
 {
     vector<int> tmp = toNums(getValidCipherText(cipher));
